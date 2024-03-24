@@ -11,6 +11,15 @@ from IPython.display import Markdown
 from decouple import Config, RepositoryEnv
 env=Config(RepositoryEnv('.env'))
 
+# To Convert MD to Str
+import markdown
+from bs4 import BeautifulSoup
+
+def md_to_text(md):
+    html = markdown.markdown(md)
+    soup = BeautifulSoup(html, features='html.parser')
+    return soup.get_text()
+
 # Convert to md
 def to_markdown(text):
   text = text.replace('•', '  *')
@@ -19,6 +28,10 @@ def to_markdown(text):
 # https://aistudio.google.com/app/apikey
 genai.configure(api_key=env.get('GOOGLE_API_KEY'))
 
-for m in genai.list_models():
-  if 'generateContent' in m.supported_generation_methods:
-    print(m.name)
+# Choose Model
+model = genai.GenerativeModel('gemini-pro')
+response = model.generate_content("Do you Know Power rangers ?")
+
+# Call to_markdown if needed
+md = response.text
+print(md_to_text(md))
