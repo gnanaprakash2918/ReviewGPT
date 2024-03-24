@@ -30,8 +30,18 @@ genai.configure(api_key=env.get('GOOGLE_API_KEY'))
 
 # Choose Model
 model = genai.GenerativeModel('gemini-pro')
-response = model.generate_content("Do you Know Power rangers ?")
 
-# Call to_markdown if needed
-md = response.text
-print(md_to_text(md))
+
+product_url = input('Enter The URL of the Amazon Product : ')
+
+while True:
+  user_query = input('Enter your query about the product : ')
+  if(user_query == 'end'):
+    break
+  
+  response = model.generate_content(f'Goto this product link ${product_url} and read about the product details and answer this query ${user_query}')
+  
+  # Reinitialize the Model
+  model = genai.GenerativeModel('gemini-pro')
+  print(md_to_text(response.text))
+
